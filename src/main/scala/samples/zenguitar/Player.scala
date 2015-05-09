@@ -21,6 +21,7 @@ class Player {
 
 
   /* Creating the Link to the RealTimePlayer ------------------------------------------------------------------------ */
+  def init: Unit = player
   private lazy val player = new RealTimePlayer {                      // Creates the link to the midi-player.
     instrument --> { this.changeInstrument(_)                      }  // Bind instrument index to player's index.
     pitch      --> { this.changePitchWheel(0.toByte, pitch.toByte) }  // Sets the midi-player's pitch-wheel.

@@ -76,6 +76,11 @@ class  ZenGuitar3D {                                                  // Holds t
 
   /* Pinning onto the Scene-Graph ----------------------------------------------------------------------------------- */
   guitar <++ (neck, guitarStringsContainer, fm(3,0), fm(5,0), fm(7,0), fm(9,0), fm(12,1), fm(12,-1), MidiPicker )
+  pin    <++ (new HBox {
+    <++ (new Button{text = "3d Mode" ; onAction --> { muteMode       = !muteMode} })
+    <++ (new Button{text = "Zylinder"; onAction --> { muteMode = false; showMidiPicker = !showMidiPicker} })
+    <++ (new Button{text = "Reset"   ; onAction --> { reset } })
+  } )
   pin    <++ (guitar, pointLight, theCamera)
 
   scene = new Scene(pin, STRING_W.toInt, NECK_H.toInt, true, null) {
@@ -102,19 +107,19 @@ class  ZenGuitar3D {                                                  // Holds t
 
   /* Declaring the invariants, used when scrolling and zooming ------------------------------------------------------ */
   when(muteMode) ==> { // the following bindings/events are enabled, as long as muteMode is true
-    println("muteMode activated!")
     Δ(guitarAngleX) <-- (Δ(pin.dragDistance.y + pin.touchScrollDistance.y) /  3)
     Δ(guitarAngleY) <-- (Δ(pin.dragDistance.x + pin.touchScrollDistance.x) / -3)
-    Δ(guitarAngleZ) <--  Δ(pin.rotateAngleSum)
+    Δ(guitarAngleZ) <--  Δ(pin.rotateAngle)
     guitar.scaleXYZ <-- (prev(guitar.scaleX) *                      // Defining Scale based upon the new Δ-distance and
                         (Δ(pin.mouseWheelDistance.y) / 400 + 1) *   // the relation between the last zoom-factor.
-                        guitar.zoomFactorProduct / prev(guitar.zoomFactorProduct)).to3D
+                        guitar.zoomFactor / prev(guitar.zoomFactor)).to3D
 
-    when(guitar.scaleX < .25) --> {                                 // When the x-scale goes below 25%, do a reset.
+    when(guitar.scaleX < .25) --> { reset }                               // When the x-scale goes below 25%, do a reset.
+  }
+  def reset = {
       muteMode = false                                              // .. muting is set to off.
       guitarAngleXYZ    := (0,0,0)  in GUITAR_RESET_DURATION        // .. any rotation is reset.
       guitar.scaleXYZ   := 1.0.to3D in GUITAR_RESET_DURATION        // .. any scaling  is reset.
-    }
   }
   /* ................................................................................................................ */
 }

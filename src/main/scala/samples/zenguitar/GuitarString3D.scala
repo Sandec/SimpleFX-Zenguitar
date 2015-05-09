@@ -20,10 +20,6 @@ class GuitarString3D(openNoteValue: Int, numFrets: Int, pwidth: Double, pheight:
   /* ................................................................................................................ */
 
 
-  /* Private Bindables ---------------------------------------------------------------------------------------------- */
-  /* ................................................................................................................ */
-
-
   /* The Constructor ------------------------------------------------------------------------------------------------ */
   updated {                                                             // The main constructor.
     prefWidthProp  = pwidth                                             // Setting the preferred width.
@@ -39,9 +35,12 @@ class GuitarString3D(openNoteValue: Int, numFrets: Int, pwidth: Double, pheight:
   when ( muteMode            ) --> { player.stop            }           // Stop when mute is off.
   when (!muteMode            ) ==> {                                    // When mute is off, define some events ..
     when(localTouchCount >= 4) --> { muteMode       = true  }           // .. When 4 or more fingers, turn mute on.
-    when(totalTouchCount >= 5) --> { showMidiPicker = true  }           // .. When 5 or more fingers, show MidiPicker.
     lowestTouchPoint           --> { useLowestTouchPoint(_) }           // .. When lowest changes, update player.
   }
+  when (totalTouchCount >= 5) --> { showMidiPicker = !showMidiPicker  } // .. When 5 or more fingers, show MidiPicker.
+  when (totalTouchCount >= 5) --> { muteMode = false                  } // .. and go out of the mudeMode
+  in(openNoteValue * (0.1 s)) --> { player.init }                       // init the players slightly delayed,
+                                                                        // so we don't freeze.
   /* ................................................................................................................ */
 
 
@@ -49,7 +48,7 @@ class GuitarString3D(openNoteValue: Int, numFrets: Int, pwidth: Double, pheight:
   private def newStringCyl = new Cylinder(5, pwidth) {                  // Factory-method for a new String-Cylinder.
     transforms   = List(strTrans, strRotate)                            // .. Positioning the cylinder.
     material     = STRING_MAT                                           // .. Setting the Color.
-    translateY <-- (if(player.playing) 2 * cos(time / (0.1 ms)) else 0)  // .. If playing, let the string vibrate. (??)
+    translateY <-- (if(player.playing) 2 * cos(time / (0.1 ms)) else 0) // .. If playing, let the string vibrate. (??)
   }
 
   private def newFretCylinder(i: Int) = {                               // Factory-method for a new Fret-Cylinder.
