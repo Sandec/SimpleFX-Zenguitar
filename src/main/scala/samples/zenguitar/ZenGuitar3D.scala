@@ -107,8 +107,8 @@ class  ZenGuitar3D {                                                  // Holds t
 
   /* Declaring the invariants, used when scrolling and zooming ------------------------------------------------------ */
   when(muteMode) ==> { // the following bindings/events are enabled, as long as muteMode is true
-    Δ(guitarAngleX) <-- (Δ(pin.dragDistance.y + pin.touchScrollDistance.y) /  3)
-    Δ(guitarAngleY) <-- (Δ(pin.dragDistance.x + pin.touchScrollDistance.x) / -3)
+    Δ(guitarAngleX) <-- (Δ(pin.dragDistanceScene.y + pin.touchScrollDistance.y) /  3)
+    Δ(guitarAngleY) <-- (Δ(pin.dragDistanceScene.x + pin.touchScrollDistance.x) / -3)
     Δ(guitarAngleZ) <--  Δ(pin.rotateAngle)
     guitar.scaleXYZ <-- (prev(guitar.scaleX) *                      // Defining Scale based upon the new Δ-distance and
                         (Δ(pin.mouseWheelDistance.y) / 400 + 1) *   // the relation between the last zoom-factor.

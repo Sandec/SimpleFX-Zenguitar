@@ -27,7 +27,7 @@ class CylinderPicker( pradius           : Double      ,                   // The
     rotationAxis      = Rotate.Y_AXIS                                     // Rotate around Y.
     def released      = onMouseReleased || onTouchReleased                // Released = mouse or touch released.
     def selFace(e:ME) = face4point(e.getPickResult.getIntersectedPoint)   // The selected face, depending on 3D click.
-    def touchAndDrag  = touchScrollDistance.x + dragDistance.x            // The x-distance of the scroll + drag.
+    def touchAndDrag  = touchScrollDistance.x + dragDistanceScene.x            // The x-distance of the scroll + drag.
 
     when(enabled) ==> {                                                   // Whenever enables is set to true ..
 
