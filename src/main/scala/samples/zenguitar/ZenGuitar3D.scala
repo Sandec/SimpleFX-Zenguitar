@@ -44,6 +44,7 @@ class  ZenGuitar3D {                                                  // Holds t
 
   /* Declaring the UI components etc -------------------------------------------------------------------------------- */
   lazy val pin        = new Group
+  lazy val guitarGr   = new Group(guitar)
   lazy val guitar     = new Group { translateXYZ = (STRING_W/2, NECK_H/2, GUITAR_INITIAL_Z) }
   lazy val theCamera  = new PerspectiveCamera (false)
   lazy val pointLight = new PointLight (WHITE) {translateXYZ = (STRING_W * 0.33, NECK_H * 0.33, -2000.0)}
@@ -81,7 +82,7 @@ class  ZenGuitar3D {                                                  // Holds t
     <++ (new Button{text = "Zylinder"; onAction --> { muteMode = false; showMidiPicker = !showMidiPicker} })
     <++ (new Button{text = "Reset"   ; onAction --> { reset } })
   }
-  pin    <++ (guitar, pointLight, theCamera)
+  pin    <++ (guitarGr, pointLight, theCamera)
 
   scene = new Scene(pin, STRING_W.toInt, NECK_H.toInt, true, null) {
     fill                  =  WHITE
@@ -99,6 +100,11 @@ class  ZenGuitar3D {                                                  // Holds t
   @Bind var guitarAngleZ   : Double  = 0.0
   @Bind var curZoomFactor  : Double  = 1.0
 
+  def toScaleW = scene.width / STRING_W
+  def toScaleH = scene.height / NECK_H
+  def toScale = mini(toScaleW, toScaleH)
+
+  guitarGr.transform <-- (Translate(scene.wh / 2) * Scale(toScale) * Translate(-STRING_W / 2, -NECK_H / 2))
   guitar.transform <-- (Rotate(guitarAngleX, Rotate.X_AXIS)  *
                         Rotate(guitarAngleY, Rotate.Y_AXIS)  *
                         Rotate(guitarAngleZ, Rotate.Z_AXIS))

@@ -1,10 +1,9 @@
 enablePlugins(SimpleFXPlugin)
+enablePlugins(plugin.JavaFXMobilePlugin)
 
 scalaVersion := "2.11.7"
 
 organization := "SANDEC"
-
-resolvers += Resolver.url("SANDEC", url("http://dl.bintray.com/sandec/repo"))(Resolver.ivyStylePatterns)
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-language:_")
 
